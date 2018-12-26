@@ -1,0 +1,28 @@
+{
+  "name": "commanditor",
+  "version": "0.0.1",
+  "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
+  "scripts": {
+    "build": "webpack --progress",
+    "build-prod": "webpack --mode=\"production\" --progress",
+    "watch": "webpack --watch --progress",
+    "serve": "python -m SimpleHTTPServer 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commanditor/commanditor.github.io.git"
+  },
+  "author": "sydeslyde",
+  "bugs": {
+    "url": "https://github.com/commanditor/commanditor.github.io/issues"
+  },
+  "homepage": "https://commanditor.github.io",
+  "devDependencies": {
+    "css-loader": "^2.0.2",
+    "monaco-editor": "^0.15.6",
+    "style-loader": "^0.23.1",
+    "uglifyjs-webpack-plugin": "^2.1.0",
+    "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2"
+  }
+}
