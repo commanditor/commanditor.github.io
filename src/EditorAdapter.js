@@ -38,6 +38,7 @@ export class EditorAdapter {
             ].join('\n'),
             language: 'javascript'
         });
+        this.editor.focus();
 
         // add resize watcher
         window.addEventListener('resize', e => {
