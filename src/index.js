@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import './commands/ChangeLanguageModeAction';
 
 self.MonacoEnvironment = {
 	getWorkerUrl: function (moduleId, label) {
