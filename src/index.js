@@ -1,5 +1,4 @@
-import * as monaco from 'monaco-editor';
-import './commands/ChangeLanguageModeAction';
+import { App } from './App';
 
 self.MonacoEnvironment = {
 	getWorkerUrl: function (moduleId, label) {
@@ -19,19 +18,5 @@ self.MonacoEnvironment = {
 	}
 }
 
-var container = document.getElementById('container');
-
-// create editor
-var editor = monaco.editor.create(container, {
-	value: [
-		'function x() {',
-		'\tconsole.log("Hello world!");',
-		'}'
-	].join('\n'),
-	language: 'javascript'
-});
-
-// add resize watcher
-window.addEventListener("resize", e => {
-	editor.layout();
-});
+const app = new App();
+window.app = app;
