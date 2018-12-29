@@ -18,6 +18,9 @@
   },
   "homepage": "https://commanditor.github.io",
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "babel-loader": "^8.0.4",
     "css-loader": "^2.0.2",
     "monaco-editor": "^0.15.6",
     "style-loader": "^0.23.1",

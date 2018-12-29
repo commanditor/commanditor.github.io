@@ -1,5 +1,6 @@
 import * as monaco from 'monaco-editor';
 import './commands/ChangeLanguageModeAction';
+import { WelcomeModalController } from './contributions/welcomeModal';
 import { App } from './App';
 import { AuthAdapter } from './AuthAdapter';
 import { DriveAdapter } from './DriveAdapter';
@@ -14,7 +15,7 @@ export class EditorAdapter {
         this.app = app;
         this.auth = auth;
         this.drive = drive;
-        this.auth.addEventListener('loggedinchanged', this.handleLoggedInChange);
+        this.auth.addEventListener('loggedinchanged', this.handleLoggedInChange.bind(this));
         this.editor = null;
 
         this.createEditorDom();
@@ -83,5 +84,11 @@ export class EditorAdapter {
     handleLoggedInChange(b) {
         // TODO hide auth window
         // TODO initiate file loading
+        const contrib = WelcomeModalController.get(this.editor);
+        if (!b) {
+            contrib.show();
+        } else {
+            contrib.hide();
+        }
     }
 }
