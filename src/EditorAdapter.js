@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor';
 import './commands/ChangeLanguageModeAction';
 import { WelcomeModalController } from './contributions/welcomeModal';
+import './contributions/editMargin';
 import { App } from './App';
 import { AuthAdapter } from './AuthAdapter';
 import { DriveAdapter } from './DriveAdapter';
