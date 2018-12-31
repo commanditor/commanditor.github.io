@@ -2,7 +2,7 @@ import * as monaco from 'monaco-editor';
 import './commands/ChangeLanguageModeAction';
 import './commands/ChangeEditorThemeAction';
 import './contributions/editMargin';
-import { DriveAdapter } from './DriveAdapter';
+import './contributions/drive';
 
 /**
   * The Main App
@@ -31,9 +31,6 @@ export class App {
         window.addEventListener('resize', e => {
             this.editor.layout();
         });
-
-        // init modules
-        this.drive = new DriveAdapter(this);
 
         // freeze singleton
         Object.freeze(this);

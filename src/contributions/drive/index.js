@@ -1,14 +1,19 @@
-import { App } from './App';
-import { GapiAuthController } from './contributions/gapiAuth';
+import { Disposable } from "monaco-editor/esm/vs/base/common/lifecycle";
+import { registerEditorContribution } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
+import { GapiAuthController } from '../gapiAuth';
+import { getUrlState, getMonacoLanguageForFileExtension } from '../../Utils';
 
-export class DriveAdapter {
-    /**
-     * @param {App} app - the app
-     */
-    constructor(app) {
-        this.app = app;
-        
-        GapiAuthController.get(this.app.editor).onLoggedInChanged((b) => this.handleLoggedInChange(b));
+export class DriveController extends Disposable {
+    constructor(editor) {
+        super();
+
+        this._editor = editor;
+
+        GapiAuthController.get(this._editor).onLoggedInChanged((b) => this.handleLoggedInChange(b));
+    }
+
+    handleLoggedInChange(b) {
+        // TODO
     }
 
     /**
@@ -121,15 +126,7 @@ export class DriveAdapter {
         }).then(response => response.result);
     }
 
-    // #region config stuff
-    
-    /**
-     * Retrieves and parses the Contents of the application config stored in Google Drive.
-     * @returns {AppConfig} - application config data
-     */
-    getAppConfig() {
-        // TODO
-    }
+    // #region --- config stuff ---
 
     /**
      * Retrieves the File Info of the application config file
@@ -181,11 +178,13 @@ export class DriveAdapter {
 
     // #endregion
 
-    handleLoggedInChange(b) {
-        // TODO
+	getId() {
+		return DriveController.ID;
     }
-
-    /*var request = gapi.client.request({
+    
+    /*
+    // example with generic request
+    var request = gapi.client.request({
         'path': '/drive/v3/files/' + "abcdefghijklmnopqrstuvwxyz",
         'params':{'alt': 'media'},
         'headers': {'contentType': 'charset=utf-8'}
@@ -193,5 +192,19 @@ export class DriveAdapter {
     request.execute((response, r2) => {
         console.log("request response", JSON.parse(r2));
         appendPre("REQUEST RESPONSE");      
-    });*/
+    });
+    */
 }
+
+// TODO how to babel class properties
+DriveController.ID = 'commanditor.contrib.DriveController';
+/**
+ * @returns {DriveController} the controller
+ */
+DriveController.get = (editor) => {
+	return editor.getContribution(
+		DriveController.ID
+	);
+};
+
+registerEditorContribution(DriveController);
