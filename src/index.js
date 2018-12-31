@@ -1,4 +1,8 @@
-import { App } from './App';
+import * as monaco from 'monaco-editor';
+import './commands/ChangeLanguageModeAction';
+import './commands/ChangeEditorThemeAction';
+import './contributions/editMargin';
+import './contributions/drive';
 import { GapiAuthController } from './contributions/gapiAuth';
 
 self.MonacoEnvironment = {
@@ -19,9 +23,24 @@ self.MonacoEnvironment = {
 	}
 }
 
-const app = new App();
-window.app = app;
+const domNode = document.getElementById('container');
+const editor = monaco.editor.create(domNode, {
+	value: [
+		'function x() {',
+		'\tconsole.log("Hello world!");',
+		'}'
+	].join('\n'),
+	language: 'javascript'
+});
+editor.focus();
+
+// add resize watcher
+window.addEventListener('resize', e => {
+	editor.layout();
+});
+
+window.editor = editor;
 
 window.handleClientLoad = () => {
-	GapiAuthController.get(app.editor).loadGapi();
+	GapiAuthController.get(editor).loadGapi();
 }
