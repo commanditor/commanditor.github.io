@@ -1,31 +1,42 @@
 /**
  * Utilities
  */
-class Utils {
-    /**
-     * Retrieves the Parameters from the Open URL
-     * @returns - the parameters
-     */
-    static GetOpenParams() {
-        // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-        // https://developers.google.com/drive/api/v3/enable-sdk#drive_integration
-        const urlParams = new URLSearchParams(window.location.search);
-        const state = JSON.parse(urlParams.get('state')); // when no template-variables are used in Openurl
-        const ids = urlParams.get('ids') | state.ids; // comma seperated list of ids to open
-        const userId = urlParams.get('userId') | state.userId;
-        const action = urlParams.get('action') | state.action; // create|open
-        const folderId = urlParams.get('folderId') | state.folderId; // parent folder, for create only)
-        return {
-            /** @type {string} */
-            ids,
-            /** @type {string} */
-            userId,
-            /** @type {("open"|"create")} */
-            action,
-            /** @type {string} */
-            folderId
-        };
-    }
+export function getUrlState() {
+    // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+    // https://developers.google.com/drive/api/v3/enable-sdk#drive_integration
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams)
+        return null;
+
+    const state = JSON.parse(urlParams.get('state'));
+    if (!state)
+        return null;
+
+    return {
+        /** @type {string} */
+        ids: state.ids,
+        /** @type {string} */
+        userId: state.userId,
+        /** @type {("open"|"create")} */
+        action: state.action,
+        /** @type {string} */
+        folderId: state.folderId
+    };
+};
+
+/**
+* tries to get the monaco-language for a specific file extension (plaintext is fallback)
+* @param {string} ext the file extension
+*/
+export function getMonacoLanguageForFileExtension(ext) {
+   ext = ext.startsWith('.') ? ext : '.' + ext;
+   const monacoLanguages = self.monaco.languages.getLanguages();
+   const matches = monacoLanguages.filter(lang => lang.extensions.includes(ext));
+   if (matches.length > 0)
+       // every extension only appears for one language
+       return matches[0];
+   // plaintext as fallback
+   return monacoLanguages[0];
 }
 
 class AppConfig {

@@ -7,10 +7,8 @@ export class DriveAdapter {
      */
     constructor(app) {
         this.app = app;
-    }
-
-    init() {
-        GapiAuthController.get(this.app.editor.editor).onLoggedInChanged((b) => this.handleLoggedInChange(b));
+        
+        GapiAuthController.get(this.app.editor).onLoggedInChanged((b) => this.handleLoggedInChange(b));
     }
 
     /**

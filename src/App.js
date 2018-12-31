@@ -1,5 +1,8 @@
+import * as monaco from 'monaco-editor';
+import './commands/ChangeLanguageModeAction';
+import './commands/ChangeEditorThemeAction';
+import './contributions/editMargin';
 import { DriveAdapter } from './DriveAdapter';
-import { EditorAdapter } from './EditorAdapter';
 
 /**
   * The Main App
@@ -13,11 +16,25 @@ export class App {
         }
         App._instance = this;
 
+        const domNode = document.getElementById('container');
+        this.editor = monaco.editor.create(domNode, {
+            value: [
+                'function x() {',
+                '\tconsole.log("Hello world!");',
+                '}'
+            ].join('\n'),
+            language: 'javascript'
+        });
+        this.editor.focus();
+
+        // add resize watcher
+        window.addEventListener('resize', e => {
+            this.editor.layout();
+        });
+
         // init modules
-        //this.config = new AppConfig();
         this.drive = new DriveAdapter(this);
-        this.editor = new EditorAdapter(this, this.drive);
-        this.drive.init();
+
         // freeze singleton
         Object.freeze(this);
     }
