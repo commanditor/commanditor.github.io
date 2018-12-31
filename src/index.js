@@ -1,4 +1,5 @@
 import { App } from './App';
+import { GapiAuthController } from './contributions/gapiAuth';
 
 self.MonacoEnvironment = {
 	getWorkerUrl: function (moduleId, label) {
@@ -20,3 +21,7 @@ self.MonacoEnvironment = {
 
 const app = new App();
 window.app = app;
+
+window.handleClientLoad = () => {
+	GapiAuthController.get(app.editor.editor).loadGapi();
+}

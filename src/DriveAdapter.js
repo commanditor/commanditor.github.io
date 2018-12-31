@@ -1,15 +1,16 @@
 import { App } from './App';
-import { AuthAdapter } from './AuthAdapter';
+import { GapiAuthController } from './contributions/gapiAuth';
 
 export class DriveAdapter {
     /**
      * @param {App} app - the app
-     * @param {AuthAdapter} auth - the auth adapter
      */
-    constructor(app, auth) {
+    constructor(app) {
         this.app = app;
-        this.auth = auth;
-        this.auth.addEventListener('loggedinchanged', this.handleLoggedInChange);
+    }
+
+    init() {
+        GapiAuthController.get(this.app.editor.editor).onLoggedInChanged((b) => this.handleLoggedInChange(b));
     }
 
     /**

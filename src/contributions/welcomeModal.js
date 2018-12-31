@@ -6,7 +6,7 @@ import { registerThemingParticipant } from 'monaco-editor/esm/vs/platform/theme/
 import { renderFormattedText } from 'monaco-editor/esm/vs/base/browser/htmlContentRenderer';
 import { FastDomNode, createFastDomNode } from 'monaco-editor/esm/vs/base/browser/fastDomNode';
 import { Widget } from 'monaco-editor/esm/vs/base/browser/ui/widget';
-import { App } from '../App';
+import { GapiAuthController } from './gapiAuth';
 
 export class WelcomeModalController extends Disposable {
 	constructor(
@@ -66,14 +66,13 @@ class WelcomeModalWidget extends Widget {
 
 		this._register(this._editor.onDidLayoutChange(() => {
 			if (this._isVisible) {
-                console.log("layout change");
 				this._layout();
 			}
 		}));
 
-		/*this.onblur(this._contentDomNode.domNode, () => {
-			this.hide();
-		});*/
+		// add auth event listener
+		const authController = GapiAuthController.get(this._editor);
+		this._register(authController.onLoggedInChanged((b) => b ? this.hide() : this.show()));
 
 		this._editor.addOverlayWidget(this);
 	}
@@ -115,9 +114,10 @@ class WelcomeModalWidget extends Widget {
 		text += 'Get started by authorizing the App to access your Google Drive, and explore the available Commands by pressing the F1 key!\n';
 		this._contentDomNode.domNode.appendChild(renderFormattedText(text));
 		
+		let authController = GapiAuthController.get(this._editor);
 		let btnAuth = createFastDomNode(document.createElement("div"));
 		btnAuth.domNode.innerText = "Authorize";
-		btnAuth.domNode.addEventListener("click", () => App._instance.auth.requestAuthorization());
+		btnAuth.domNode.addEventListener("click", () => authController.requestAuthorization());
 		btnAuth.setAttribute("role", "button");
 		btnAuth.setClassName("button");
 		this._contentDomNode.domNode.appendChild(btnAuth.domNode);

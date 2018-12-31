@@ -1,25 +1,20 @@
 import * as monaco from 'monaco-editor';
 import './commands/ChangeLanguageModeAction';
 import './commands/ChangeEditorThemeAction';
-import { WelcomeModalController } from './contributions/welcomeModal';
 import './contributions/editMargin';
 import { App } from './App';
-import { AuthAdapter } from './AuthAdapter';
 import { DriveAdapter } from './DriveAdapter';
 
 export class EditorAdapter {
     /**
      * @param {App} app - the app
-     * @param {AuthAdapter} auth - the auth adapter
      * @param {DriveAdapter} drive - the drive adapter
      */
-    constructor(app, auth, drive) {
+    constructor(app, drive) {
         this.app = app;
-        this.auth = auth;
         this.drive = drive;
-        this.auth.addEventListener('loggedinchanged', this.handleLoggedInChange.bind(this));
         this.editor = null;
-
+        
         this.createEditorDom();
     }
 
@@ -81,16 +76,5 @@ export class EditorAdapter {
             return matches[0];
         // plaintext as fallback
         return monacoLanguages[0];
-    }
-
-    handleLoggedInChange(b) {
-        // TODO hide auth window
-        // TODO initiate file loading
-        const contrib = WelcomeModalController.get(this.editor);
-        if (!b) {
-            contrib.show();
-        } else {
-            contrib.hide();
-        }
     }
 }
