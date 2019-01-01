@@ -45,6 +45,7 @@ export class DriveController extends Disposable {
             var supportedExts = self.monaco.languages.getLanguages().map(l => l.extensions).reduce((exts, all) => all.concat(exts));
             if (supportedExts.includes("." + fi.fileExtension)) {
                 this.currentFileInfo = fi;
+                this.setDocumentFileTitle(this.currentFileInfo.name);
                 console.log("will now try to get file content");
                 return this.getFileContent(id);
             }
@@ -236,6 +237,15 @@ export class DriveController extends Disposable {
     }
 
     // #endregion
+
+    setDocumentFileTitle(filename) {
+        if (!filename || filename.length == 0) {
+            document.title = 'commanditor';
+            return;
+        }
+        
+        document.title = `commanditor (${filename})`;
+    }
 
 	getId() {
 		return DriveController.ID;
