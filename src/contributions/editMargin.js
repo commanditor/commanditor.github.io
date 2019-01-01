@@ -1,6 +1,7 @@
 import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution } from 'monaco-editor/esm/vs/editor/browser/editorExtensions';
 import { defaultInsertColor, defaultRemoveColor } from 'monaco-editor/esm/vs/platform/theme/common/colorRegistry';
 import { Disposable } from 'monaco-editor/esm/vs/base/common/lifecycle';
+import { Color, RGBA } from 'monaco-editor/esm/vs/base/common/color';
 import { registerThemingParticipant } from 'monaco-editor/esm/vs/platform/theme/common/themeService';
 
 export class EditMarginController extends Disposable {
@@ -24,23 +25,24 @@ export class EditMarginController extends Disposable {
     handleDidModelContentChange(e) {
         for (var c of e.changes.sort((a,b) => a.text.localeCompare(b.text))) {
             var startLine = c.range.startLineNumber;
-            var endLine = c.range.endLineNumber + (c.text.split("\n").length - 1);
-            var marginClassName = c.text === "" ? "editMargin--removed" : "editMargin--added";
+            var endLine = c.range.endLineNumber + (c.text.split('\n').length - 1);
+            var marginClassName = c.text === '' ? 'editMargin--removed' : 'editMargin--added';
 
-            if (c.text === "" && c.range.endLineNumber != c.range.startLineNumber) {
+            if (c.text === '' && c.range.endLineNumber != c.range.startLineNumber) {
                 // if multiline delete, endline must be same as startline, or multiple lines will be marked as "removed"
                 endLine = startLine;
             }
 
             for (var li = startLine; li <= endLine; li++) {
-                var oldLineDecorations = this._editor.getLineDecorations(li)
-                    .filter(d => d.options.marginClassName === "editMargin--added" || d.options.marginClassName === "editMargin--removed")
+                var oldDecorationIds = this._editor.getLineDecorations(li)
+                    .filter(d => d.options.marginClassName === 'editMargin--added'
+                        || d.options.marginClassName === 'editMargin--removed'
+                        || d.options.marginClassName === 'editMargin--saved')
                     .map(d => d.id);
 
-                var range = new self.monaco.Range(li, 0, li, 0);
-                this._editor.deltaDecorations(oldLineDecorations, [
+                this._editor.deltaDecorations(oldDecorationIds, [
                     {
-                        range: range,
+                        range: new self.monaco.Range(li, 0, li, 0),
                         options: {
                             isWholeLine: true,
                             marginClassName: marginClassName
@@ -57,7 +59,22 @@ export class EditMarginController extends Disposable {
     }
     
     reset() {
-        // TODO
+        // TODO think about not removing markers, but changing their color from red/green to maybe blue?
+        const oldLineDecorations = this._editor.getModel().getAllDecorations()
+            .filter(d => d.options.marginClassName === 'editMargin--added'
+                || d.options.marginClassName === 'editMargin--removed'
+                || d.options.marginClassName === 'editMargin--saved');
+        
+        const oldDecorationIds = oldLineDecorations.map(d => d.id);
+        const newDecorations = oldLineDecorations.map(d => ({
+            range: new self.monaco.Range(d.range.startLineNumber, 0, d.range.startLineNumber, 0),
+            options: {
+                isWholeLine: true,
+                marginClassName: 'editMargin--saved'
+            }
+        }));
+
+        this._editor.deltaDecorations(oldDecorationIds, newDecorations);
     }
 }
 
@@ -83,5 +100,12 @@ registerThemingParticipant((theme, collector) => {
     const removeColor = defaultRemoveColor.transparent(3);
 	if (removeColor) {
 		collector.addRule(`.monaco-editor .editMargin--removed { border-left: 6px solid ${removeColor}; }`);
+    }
+
+    //const dark = new Color(new RGBA(12, 125, 157, 0.6));
+    const light = new Color(new RGBA(102, 175, 224, 0.6));
+    const savedColor = light;
+	if (savedColor) {
+		collector.addRule(`.monaco-editor .editMargin--saved { border-left: 6px solid ${savedColor}; }`);
 	}
 });

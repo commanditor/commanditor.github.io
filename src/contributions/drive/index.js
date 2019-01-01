@@ -1,5 +1,6 @@
 import { Disposable } from "monaco-editor/esm/vs/base/common/lifecycle";
 import { registerEditorContribution, registerEditorAction } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
+import { EditMarginController } from '../editMargin';
 import { GapiAuthController } from '../gapiAuth';
 import { getUrlState, getMonacoLanguageForFileExtension } from '../../Utils';
 import { SaveAction } from './SaveAction';
@@ -65,6 +66,11 @@ export class DriveController extends Disposable {
         return this.uploadSimple(this.currentFileInfo.id, currentModelContent)
             .then(fi => {
                 this.currentFileSavedContent = currentModelContent;
+                
+                const editMarginController = EditMarginController.get(this._editor);
+                editMarginController.reset();
+
+                return fi;
             });
             // TODO error handling
     }
