@@ -1,7 +1,8 @@
 import { Disposable } from "monaco-editor/esm/vs/base/common/lifecycle";
-import { registerEditorContribution } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
+import { registerEditorContribution, registerEditorAction } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
 import { GapiAuthController } from '../gapiAuth';
 import { getUrlState, getMonacoLanguageForFileExtension } from '../../Utils';
+import { SaveAction } from './SaveAction';
 
 export class DriveController extends Disposable {
     constructor(editor) {
@@ -9,11 +10,63 @@ export class DriveController extends Disposable {
 
         this._editor = editor;
 
+        this.currentFileModel = undefined
+        this.currentFileInfo = undefined;
+        this.currentFileSavedContent = undefined;
+
         GapiAuthController.get(this._editor).onLoggedInChanged((b) => this.handleLoggedInChange(b));
     }
 
     handleLoggedInChange(b) {
-        // TODO
+        if (!b)
+            return;
+        
+        // TODO load/create settings-file
+
+        // try to load file from url-state
+        const state = getUrlState();
+        console.log("state", state);
+        if (state) {
+            if (state.action === 'open') {
+                if (state.userId && state.ids.length > 0) {
+                    // try to load file
+                    const id = state.ids[0];
+                    this.openDriveFile(id);
+                }
+            }
+        }
+    }
+
+    openDriveFile(id) {
+        console.log("will now try to load file ", id);
+        return this.getFileInfo(id).then((fi) => {
+            console.log("file info:", fi);
+            var supportedExts = self.monaco.languages.getLanguages().map(l => l.extensions).reduce((exts, all) => all.concat(exts));
+            if (supportedExts.includes("." + fi.fileExtension)) {
+                this.currentFileInfo = fi;
+                console.log("will now try to get file content");
+                return this.getFileContent(id);
+            }
+            return Promise.reject(); // TODO error handling
+        }).then((fileContent) => {
+            console.log("received file content with length: ", fileContent.length);
+            this.currentFileSavedContent = fileContent;
+            const lang = getMonacoLanguageForFileExtension(this.currentFileInfo.fileExtension);
+
+            // create new model in editor
+            this.currentFileModel = monaco.editor.createModel(fileContent, lang.id);
+            this._editor.setModel(this.currentFileModel);
+            this._editor.focus();
+        });
+    }
+
+    saveCurrentFile() {
+        const currentModelContent = this.currentFileModel.getValue();
+        return this.uploadSimple(this.currentFileInfo.id, currentModelContent)
+            .then(fi => {
+                this.currentFileSavedContent = currentModelContent;
+            });
+            // TODO error handling
     }
 
     /**
@@ -208,3 +261,4 @@ DriveController.get = (editor) => {
 };
 
 registerEditorContribution(DriveController);
+registerEditorAction(SaveAction);

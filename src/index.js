@@ -25,12 +25,8 @@ self.MonacoEnvironment = {
 
 const domNode = document.getElementById('container');
 const editor = monaco.editor.create(domNode, {
-	value: [
-		'function x() {',
-		'\tconsole.log("Hello world!");',
-		'}'
-	].join('\n'),
-	language: 'javascript'
+	value: '',
+	language: 'plaintext'
 });
 editor.focus();
 
