@@ -7,7 +7,7 @@ export class SaveAction extends EditorAction {
 	constructor() {
 		super({
 			id: SaveAction.Id,
-			label: "Save File to Drive",
+			label: "Save File to Google Drive",
 			alias: 'Refactor',
 			//precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasCodeActionsProvider),
 			kbOpts: {
