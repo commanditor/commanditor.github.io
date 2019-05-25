@@ -63,6 +63,12 @@ export class DriveController extends Disposable {
     }
 
     saveCurrentFile() {
+        if (!this.currentFileModel) {
+            // no file currently opened
+            alert('No File is currently Opened. Please first open your File from Google Drive.');
+            return;
+        }
+
         const currentModelContent = this.currentFileModel.getValue();
         return this.uploadSimple(this.currentFileInfo.id, currentModelContent)
             .then(fi => {
