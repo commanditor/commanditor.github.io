@@ -6,7 +6,9 @@
     "build": "webpack --progress",
     "build-prod": "webpack --mode=\"production\" --progress",
     "watch": "webpack --watch --progress",
-    "serve": "python -m SimpleHTTPServer 8000"
+    "dev": "concurrently \"npm:watch\" \"npm:serve\"",
+    "serve": "python -m http.server 8000",
+    "serve2": "python -m SimpleHTTPServer 8000"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,7 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "babel-loader": "^8.0.4",
+    "concurrently": "^4.1.0",
     "css-loader": "^2.0.2",
     "monaco-editor": "^0.15.6",
     "style-loader": "^0.23.1",
