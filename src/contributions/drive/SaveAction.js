@@ -7,8 +7,8 @@ export class SaveAction extends EditorAction {
 	constructor() {
 		super({
 			id: SaveAction.Id,
-			label: "Save File to Google Drive",
-			alias: 'Refactor',
+			label: 'Save File to Google Drive',
+			alias: 'Save File to Google Drive',
 			//precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasCodeActionsProvider),
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
@@ -21,7 +21,7 @@ export class SaveAction extends EditorAction {
 	}
 
 	run(accessor, editor) {
-        const driveController = DriveController.get(editor);
+		const driveController = DriveController.get(editor);
         return driveController.saveCurrentFile();
 	}
 }
