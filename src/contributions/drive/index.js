@@ -1,5 +1,5 @@
-import { Disposable } from "monaco-editor/esm/vs/base/common/lifecycle";
-import { registerEditorContribution, registerEditorAction } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
+import { Disposable } from 'monaco-editor/esm/vs/base/common/lifecycle';
+import { registerEditorContribution, registerEditorAction } from 'monaco-editor/esm/vs/editor/browser/editorExtensions';
 import { EditMarginController } from '../editMargin';
 import { GapiAuthController } from '../gapiAuth';
 import { getUrlState, getMonacoLanguageForFileExtension } from '../../Utils';
@@ -26,7 +26,7 @@ export class DriveController extends Disposable {
 
         // try to load file from url-state
         const state = getUrlState();
-        console.log("state", state);
+        console.log('state', state);
         if (state) {
             if (state.action === 'open') {
                 if (state.userId && state.ids.length > 0) {
@@ -39,19 +39,22 @@ export class DriveController extends Disposable {
     }
 
     openDriveFile(id) {
-        console.log("will now try to load file ", id);
-        return this.getFileInfo(id).then((fi) => {
-            console.log("file info:", fi);
+        console.log('will now try to load file ', id);
+        this.getFileInfo(id).then((fi) => {
+            console.log('file info:', fi);
             var supportedExts = self.monaco.languages.getLanguages().map(l => l.extensions).reduce((exts, all) => all.concat(exts));
-            if (supportedExts.includes("." + fi.fileExtension)) {
+            if (supportedExts.includes('.' + fi.fileExtension)) {
                 this.currentFileInfo = fi;
                 this.setDocumentFileTitle(this.currentFileInfo.name);
-                console.log("will now try to get file content");
+
+                console.log('will now try to get file content');
                 return this.getFileContent(id);
             }
-            return Promise.reject(); // TODO error handling
+
+            alert('The extension of the file you tried to open is not supported.');
+            return Promise.reject('extension is not supported');
         }).then((fileContent) => {
-            console.log("received file content with length: ", fileContent.length);
+            console.log('received file content with length: ', fileContent.length);
             this.currentFileSavedContent = fileContent;
             const lang = getMonacoLanguageForFileExtension(this.currentFileInfo.fileExtension);
 
@@ -59,17 +62,23 @@ export class DriveController extends Disposable {
             this.currentFileModel = monaco.editor.createModel(fileContent, lang.id);
             this._editor.setModel(this.currentFileModel);
             this._editor.focus();
-        });
+        }).catch(e => console.log('an error occured when trying to open the file', e));
     }
 
     saveCurrentFile() {
         if (!this.currentFileModel) {
             // no file currently opened
-            alert('No File is currently Opened. Please first open your File from Google Drive.');
+            alert('No File is currently opened. Please first open your File from Google Drive.');
             return;
         }
 
         const currentModelContent = this.currentFileModel.getValue();
+        if (currentModelContent === this.currentFileSavedContent) {
+            console.log('nothing changed, no need to save');
+            return;
+        }
+
+        console.log('will now try to save file');
         return this.uploadSimple(this.currentFileInfo.id, currentModelContent)
             .then(fi => {
                 this.currentFileSavedContent = currentModelContent;
@@ -77,9 +86,11 @@ export class DriveController extends Disposable {
                 const editMarginController = EditMarginController.get(this._editor);
                 editMarginController.reset();
 
+                console.log('file successfully saved');
+
                 return fi;
-            });
-            // TODO error handling
+            })
+            .catch(e => console.log('an error occcured during file saving', e));
     }
 
     /**
