@@ -2,10 +2,12 @@ import { QuickOpenEntry, QuickOpenModel } from 'monaco-editor/esm/vs/base/parts/
 import { registerEditorAction } from 'monaco-editor/esm/vs/editor/browser/editorExtensions';
 import { BaseEditorQuickOpenAction } from 'monaco-editor/esm/vs/editor/standalone/browser/quickOpen/editorQuickOpen';
 import { matchesFuzzy } from 'monaco-editor/esm/vs/base/common/filters/';
+import { ConfigController } from './../contributions/config';
 
 class EditorThemeEntry extends QuickOpenEntry {
-    constructor(editorThemeId, editorThemeLabel) {
+    constructor(editor, editorThemeId, editorThemeLabel) {
         super();
+        this._editor = editor;
         this._themeId = editorThemeId;
         this._themeLabel = editorThemeLabel;
     }
@@ -19,7 +21,7 @@ class EditorThemeEntry extends QuickOpenEntry {
             // run preview
         } else if (mode == 1) {
             // run open
-            self.monaco.editor.setTheme(this._themeId);
+            ConfigController.get(this._editor).updateConfigValue('theme', this._themeId);
             return true;
         }
     }
@@ -47,7 +49,7 @@ class ChangeEditorThemeAction extends BaseEditorQuickOpenAction {
                 for (var i = 0; i < monacoThemes.length; i++)
                 {
                     const theme = monacoThemes[i];
-                    const entry = new EditorThemeEntry(theme.id, theme.label);
+                    const entry = new EditorThemeEntry(editor, theme.id, theme.label);
 
                     const highlights = matchesFuzzy(searchValue, entry.getLabel());
 				    if (highlights) {

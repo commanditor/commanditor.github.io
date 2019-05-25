@@ -21,8 +21,6 @@ export class DriveController extends Disposable {
     handleLoggedInChange(b) {
         if (!b)
             return;
-        
-        // TODO load/create settings-file
 
         // try to load file from url-state
         const state = getUrlState();
@@ -163,7 +161,7 @@ export class DriveController extends Disposable {
               'Content-Type': 'text/plain'
             },
             body: content
-        });
+        }).then(response => response); // HINT then() to instantly execute the request
     }
 
     /**
@@ -217,14 +215,6 @@ export class DriveController extends Disposable {
         }).then(response => response.result.files.length > 0 ? response.result.files[0] : null);
     }
 
-    getAppConfigFileContent(id) {
-        return gapi.client.drive.files.get({
-            fileId: id,
-            //spaces: 'appDataFolder', // nicht notwendig, könnte also auch mit der ganz normalen funktion abgehandelt werden
-            alt: 'media'
-        }).then(response => JSON.parse(response.body));
-    }
-
     createEmptyAppConfigFile() {
         return gapi.client.drive.files.create({
             name: 'config.json',
@@ -235,22 +225,6 @@ export class DriveController extends Disposable {
             // https://stackoverflow.com/questions/34905363/create-file-with-google-drive-api-v3-javascript/35182924#35182924
             // https://github.com/drivenotepad/app/blob/gh-pages/js/using_apis.js#L216
         }).then(response => response.result);
-    }
-    
-    getOrCreateAppConfigFileInfo() {
-        return this.getAppConfigFileInfo()
-            .then(configFileInfo => {
-              if(configFileInfo)
-                return Promise.resolve(configFileInfo);
-              else 
-                return this.createEmptyAppConfigFile().then(result => {
-                    const defaultConfig = {
-                        theme:'vs-dark',
-                        wrap: false
-                    };
-                    return this.uploadSimple(result.id, JSON.stringify(defaultConfig)).then(response => response.result);
-                });
-            });
     }
 
     // #endregion

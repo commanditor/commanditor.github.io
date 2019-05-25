@@ -3,6 +3,7 @@ import './commands/ChangeLanguageModeAction';
 import './commands/ChangeEditorThemeAction';
 import './contributions/editMargin';
 import './contributions/drive';
+import './contributions/config';
 import './contributions/welcomeModal';
 import { GapiAuthController } from './contributions/gapiAuth';
 
