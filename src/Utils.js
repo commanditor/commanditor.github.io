@@ -25,18 +25,26 @@ export function getUrlState() {
 };
 
 /**
-* tries to get the monaco-language for a specific file extension (plaintext is fallback)
-* @param {string} ext the file extension
-*/
-export function getMonacoLanguageForFileExtension(ext) {
-   ext = ext.startsWith('.') ? ext : '.' + ext;
-   const monacoLanguages = self.monaco.languages.getLanguages();
-   const matches = monacoLanguages.filter(lang => lang.extensions.includes(ext));
-   if (matches.length > 0)
-       // every extension only appears for one language
-       return matches[0];
-   // plaintext as fallback
-   return monacoLanguages[0];
+ * tries to get the monaco-language for a filename
+ * @param {string} fileName the file name
+ * @returns {string} the monaco language id, or NULL if not supported (set plaintext as fallback if needed)
+ */
+export function getMonacoLanguageForFilename(fileName) {
+    const monacoLanguages = self.monaco.languages.getLanguages();
+    const matches = monacoLanguages.filter(lang => lang.extensions.some(ext => fileName.endsWith(ext)));
+    if (matches.length > 0)
+        // every extension only appears for one language
+        return matches[0];
+    return null;
+}
+
+/**
+ * tries to determine from the filename, if a filetype is supported.
+ * @param {string} fileName the file name
+ * @returns {boolean} filetype supported
+ */
+export function monacoLanguageSupportedForFilename(fileName) {
+    return !!getMonacoLanguageForFilename(fileName);
 }
 
 class AppConfig {

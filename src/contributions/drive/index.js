@@ -2,14 +2,24 @@ import { Disposable } from 'monaco-editor/esm/vs/base/common/lifecycle';
 import { registerEditorContribution, registerEditorAction } from 'monaco-editor/esm/vs/editor/browser/editorExtensions';
 import { EditMarginController } from '../editMargin';
 import { GapiAuthController } from '../gapiAuth';
-import { getUrlState, getMonacoLanguageForFileExtension } from '../../Utils';
+import { getUrlState, getMonacoLanguageForFilename, monacoLanguageSupportedForFilename } from '../../Utils';
+import { IContextKeyService, RawContextKey } from 'monaco-editor/esm/vs/platform/contextkey/common/contextkey';
 import { SaveAction } from './SaveAction';
+import { CreateFileAction } from './CreateFileAction';
+
+export const CONTEXTKEY_DRIVE_CANCREATENEWFILE = new RawContextKey('canCreateNewDriveFile', false);
 
 export class DriveController extends Disposable {
-    constructor(editor) {
+    constructor(editor, /*@IContextKeyService*/ _contextKeyService) {
         super();
 
         this._editor = editor;
+        this._contextKeyService = _contextKeyService;
+
+        // maybe sometimes get the decorators to work? see at the bottom of the file on how the registering works here
+        // https://babeljs.io/docs/en/babel-plugin-proposal-decorators
+        // https://github.com/WarnerHooh/babel-plugin-parameter-decorator
+        this._contextKey_canCreateNewFile = CONTEXTKEY_DRIVE_CANCREATENEWFILE.bindTo(this._contextKeyService);
 
         this.currentFileModel = undefined
         this.currentFileInfo = undefined;
@@ -24,6 +34,7 @@ export class DriveController extends Disposable {
 
         // try to load file from url-state
         const state = getUrlState();
+        this.state = state;
         console.log('state', state);
         if (state) {
             if (state.action === 'open') {
@@ -32,6 +43,11 @@ export class DriveController extends Disposable {
                     const id = state.ids[0];
                     this.openDriveFile(id);
                 }
+            } else if(state.action === 'create') {
+                // ask for filename (and instantly deactivate the create command again)
+                this._contextKey_canCreateNewFile.set(true);
+                this._editor.getAction(CreateFileAction.ID).run();
+                this._contextKey_canCreateNewFile.set(false);
             }
         }
     }
@@ -40,8 +56,7 @@ export class DriveController extends Disposable {
         console.log('will now try to load file ', id);
         this.getFileInfo(id).then((fi) => {
             console.log('file info:', fi);
-            var supportedExts = self.monaco.languages.getLanguages().map(l => l.extensions).reduce((exts, all) => all.concat(exts));
-            if (supportedExts.includes('.' + fi.fileExtension)) {
+            if (monacoLanguageSupportedForFilename(fi.name)) {
                 this.currentFileInfo = fi;
                 this.setDocumentFileTitle(this.currentFileInfo.name);
 
@@ -54,13 +69,36 @@ export class DriveController extends Disposable {
         }).then((fileContent) => {
             console.log('received file content with length: ', fileContent.length);
             this.currentFileSavedContent = fileContent;
-            const lang = getMonacoLanguageForFileExtension(this.currentFileInfo.fileExtension);
+            const lang = getMonacoLanguageForFilename(this.currentFileInfo.name) || 'plaintext';
 
             // create new model in editor
             this.currentFileModel = monaco.editor.createModel(fileContent, lang.id);
             this._editor.setModel(this.currentFileModel);
             this._editor.focus();
-        }).catch(e => console.log('an error occured when trying to open the file', e));
+        }).catch(e => console.log('an error occured while trying to open the file', e));
+    }
+
+    createAndEditNewFile(fileName) {
+        // TODO more or less the same as openDriveFile(id), should probably refactor
+        const folderId = this.state && this.state.folderId ? this.state.folderId : 'root';
+        this.createFile(fileName, folderId).then(fi => {
+            console.log('file info:', fi);
+            // dont care for extension when creating files
+            this.currentFileInfo = fi;
+            this.setDocumentFileTitle(this.currentFileInfo.name);
+
+            // empty file
+            return Promise.resolve('');
+        }).then((fileContent) => {
+            console.log('created new file with content length: ', fileContent.length);
+            this.currentFileSavedContent = fileContent;
+            const lang = getMonacoLanguageForFilename(this.currentFileInfo.name) || 'plaintext';
+
+            // create new model in editor
+            this.currentFileModel = monaco.editor.createModel(fileContent, lang.id);
+            this._editor.setModel(this.currentFileModel);
+            this._editor.focus();
+        }).catch(e => console.log('an error occured while trying to create the file', e));
     }
 
     saveCurrentFile() {
@@ -256,6 +294,9 @@ export class DriveController extends Disposable {
     */
 }
 
+// HACK because I did not get decorators to work, but this also works to register the constructor params for dependency injection
+IContextKeyService(DriveController, '_contextKeyService', 1);
+
 // TODO how to babel class properties
 DriveController.ID = 'commanditor.contrib.DriveController';
 /**
@@ -269,3 +310,4 @@ DriveController.get = (editor) => {
 
 registerEditorContribution(DriveController);
 registerEditorAction(SaveAction);
+registerEditorAction(CreateFileAction);
