@@ -11,26 +11,66 @@
 	<style>
 		body {
 			font-family: "Consolas", monospace;
+			text-align: center;
+			font-size: 18px;
+		}
+		footer {
+			font-size: 0.75em;
+			color: gray;
+		}
+		hr {
+			margin: 3em 0;
 		}
 	</style>
 </head>
 <body>
 
-<h2>commanditor</h2>
+<h1>commanditor</h1>
 
 <p>
 	Commanditor is a simple text-editor to edit your files stored on Google Drive&trade;.
 </p>
 
 <p>
-	<noscript>automatic redirect does not seem to work.</noscript>
-	<a href="./app">RUN THE EDITOR</a>
+	It has multiple Color-Themes and support for Syntax-Highlighting for many languages, including Javascript, HTML, Python, Java, and many more.
 </p>
 
-<script>
-	// redirect for now
-	window.location = "./app";
-</script>
+<p>&nbsp;</p>
+
+<noscript>You need Javascript to run this Application.</noscript>
+
+<h2><a href="./app">--&gt; RUN THE EDITOR &lt;--</a></h2>
+<p>(Edit your files by opening them via the Google Drive interface.)</p>
+
+<p>&nbsp;</p>
+
+<p>
+	The Editor is based on the powerful <a href="https://microsoft.github.io/monaco-editor/" target="_blank">Monaco Editor</a>, which is part of Visual Studio Code.
+</p>
+
+<hr />
+
+<p>
+	Monaco Editor is released under the <a href="https://github.com/microsoft/monaco-editor/blob/master/LICENSE.md" target="_blank">MIT License</a>.
+</p>
+
+<p>
+	This software is provided AS IS and for free, without warranty of any kind.<br />
+	You can view its <a href="https://github.com/commanditor/commanditor.github.io" target="_blank">source code on GitHub</a>.
+</p>
+
+<p>
+	This Application does not save any of your data. It only accesses the files you open with it and its own configuration files. For this it uses the Google Javascript API.
+</p>
+
+<p>
+	Configuration files are stored on your Google Drive in a hidden App-Folder. Delete the configuration or disconnect the application from your Google Account in your Drive Settings.
+</p>
+
+<footer>
+	Commanditor is not affiliated with Google. Google Drive is a Trademark of Google Inc.<br />
+	Commanditor is not affiliated with Microsoft. Visual Studio is a Trademark of Microsoft.
+</footer>
 
 </body>
 </html>
