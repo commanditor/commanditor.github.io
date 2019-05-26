@@ -43,8 +43,9 @@ class ChangeEditorThemeAction extends BaseEditorQuickOpenAction {
             getModel: (searchValue) => {
                 const quickOpenThemeEntries = [];
                 const monacoThemes = [
-                    { id: "vs", label: "default (light)" },
-                    { id: "vs-dark", label: "dark" }
+                    { id: 'vs', label: 'default (light)' },
+                    { id: 'vs-dark', label: 'dark' },
+                    { id: 'hc-black', label: 'high contrast (dark)' }
                 ];
                 for (var i = 0; i < monacoThemes.length; i++)
                 {

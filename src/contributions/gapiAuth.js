@@ -32,7 +32,8 @@ export class GapiAuthController extends Disposable {
             clientId: GAPI_CONSTS.CLIENT_ID,
             discoveryDocs: GAPI_CONSTS.DISCOVERY_DOCS,
             scope: GAPI_CONSTS.SCOPES
-        }).then(() => this.onGapiInit());
+        }).then(() => this.onGapiInit())
+          .catch(err => console.log('gapi init error', err));
     }
 
     onGapiInit() {

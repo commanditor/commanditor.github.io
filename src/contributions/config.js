@@ -82,7 +82,7 @@ export class ConfigController extends Disposable {
     validateConfigPart(key, value) {
         switch(key) {
             case 'theme':
-                return value === 'vs' || value === 'vs-dark';
+                return value === 'vs' || value === 'vs-dark' || value === 'hc-black';
             default:
                 return false;
         }

@@ -1,7 +1,6 @@
 import { EditorAction } from 'monaco-editor/esm/vs/editor/browser/editorExtensions';
-import { EditorContextKeys } from 'monaco-editor/esm/vs/editor/common/editorContextKeys';
+import * as monaco from './../../monaco'; // HINT must reimport keys from here, because in 'monaco-editor/esm/vs/base/common/keyCodes' they are an enum and will fail at runtime
 import { DriveController } from './';
-import { KeyMod, KeyCode } from 'monaco-editor';
 
 export class SaveAction extends EditorAction {
 	constructor() {
@@ -9,13 +8,9 @@ export class SaveAction extends EditorAction {
 			id: SaveAction.Id,
 			label: 'Save File to Google Drive',
 			alias: 'Save File to Google Drive',
-			//precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasCodeActionsProvider),
 			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyMod.CtrlCmd | KeyCode.KEY_S,
-				mac: {
-					primary: KeyMod.WinCtrl | KeyCode.KEY_S
-				}
+				kbExpr: null,
+				primary: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S
 			}
 		});
 	}
