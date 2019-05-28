@@ -1,0 +1,87 @@
+{
+    "name": "Commanditor",
+    "version": "0.1.0",
+    "manifest_version": 2,
+    "description": "Commanditor is a simple and robust text-editor to edit your files stored on Google Drive™.",
+    "container": ["DOMAIN_INSTALLABLE", "GOOGLE_DRIVE"],
+    "api_console_project_id": "779271503066",
+    "gdrive_mime_types": {
+        "http://drive.google.com/intents/opendrivedoc": [
+            {
+                "type": [
+                    "text/plain",
+                    "text/markdown",
+                    "application/json",
+                    "text/css",
+                    "text/html",
+                    "text/x-java-source",
+                    "text/x-java",
+                    "text/less",
+                    "text/x-less",
+                    "application/x-php",
+                    "text/x-scss",
+                    "text/scss",
+                    "text/typescript",
+                    "text/xml",
+                    "application/xml",
+                    "application/xaml+xml",
+                    "application/x-yaml",
+                    "text/x-handlebars-template",
+                    "application/vnd.google.drive.ext-type.txt",
+                    "application/vnd.google.drive.ext-type.gitignore",
+                    "application/vnd.google.drive.ext-type.json",
+                    "application/vnd.google.drive.ext-type.bat",
+                    "application/vnd.google.drive.ext-type.cmd",
+                    "application/vnd.google.drive.ext-type.c",
+                    "application/vnd.google.drive.ext-type.h",
+                    "application/vnd.google.drive.ext-type.cpp",
+                    "application/vnd.google.drive.ext-type.cs",
+                    "application/vnd.google.drive.ext-type.css",
+                    "application/vnd.google.drive.ext-type.dockerfile",
+                    "application/vnd.google.drive.ext-type.html",
+                    "application/vnd.google.drive.ext-type.htm",
+                    "application/vnd.google.drive.ext-type.less",
+                    "application/vnd.google.drive.ext-type.java",
+                    "application/vnd.google.drive.ext-type.js",
+                    "application/vnd.google.drive.ext-type.jsx",
+                    "application/vnd.google.drive.ext-type.md",
+                    "application/vnd.google.drive.ext-type.markdown",
+                    "application/vnd.google.drive.ext-type.php",
+                    "application/vnd.google.drive.ext-type.ps1",
+                    "application/vnd.google.drive.ext-type.py",
+                    "application/vnd.google.drive.ext-type.sql",
+                    "application/vnd.google.drive.ext-type.scss",
+                    "application/vnd.google.drive.ext-type.xaml",
+                    "application/vnd.google.drive.ext-type.vb",
+                    "application/vnd.google.drive.ext-type.xml",
+                    "application/vnd.google.drive.ext-type.svg",
+                    "application/vnd.google.drive.ext-type.yaml",
+                    "application/vnd.google.drive.ext-type.yml",
+                    "application/vnd.google.drive.ext-type.sh",
+                    "application/vnd.google.drive.ext-type.bash",
+                    "application/vnd.google.drive.ext-type.go",
+                    "application/vnd.google.drive.ext-type.handlebars",
+                    "application/vnd.google.drive.ext-type.hbs",
+                    "application/vnd.google.drive.ext-type.ini",
+                    "application/vnd.google.drive.ext-type.properties",
+                    "application/vnd.google.drive.ext-type.gitconfig",
+                    "application/vnd.google.drive.ext-type.config"
+                ],
+                "href": "https://commanditor.github.io/app/",
+                "title": "Open",
+                "disposition": "window"
+            }
+        ]
+    },
+    "icons": {
+        "256": "icon256.png",
+        "128": "icon128.png",
+        "32": "icon32.png",
+        "16": "icon16.png"
+    },
+    "app": {
+        "launch": {
+            "web_url": "https://commanditor.github.io/app/"
+        }
+    }
+}

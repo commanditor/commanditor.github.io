@@ -1,6 +1,6 @@
 {
   "name": "commanditor",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
   "scripts": {
     "build": "webpack --progress",
