@@ -41,6 +41,8 @@ export class ConfigController extends Disposable {
             .then(config => {
                 console.log('loaded config', config);
                 this.updateConfig(config, false);
+                // update locally saved config
+                this.local_saveAppConfig();
             });
     }
 
