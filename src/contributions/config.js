@@ -18,6 +18,11 @@ export class ConfigController extends Disposable {
         this.config = {
             theme: 'vs'
         };
+        
+        // on init try to load config from local storage, its faster than fetching from drive
+        const localStorageConfig = this.local_getAppConfig();
+        if (localStorageConfig)
+            this.updateConfig(localStorageConfig, false);
 
         this.configFileInfo = undefined;
 
@@ -39,25 +44,28 @@ export class ConfigController extends Disposable {
             });
     }
 
-    updateConfig(config, saveToDrive = true) {
+    updateConfig(config, saveChanges = true) {
         const unhandled = [];
         for(var key of Object.keys(config)) {
             if (!this._internal_updateConfigValueInternal(key, config[key]))
                 unhandled.push({ key, value: config[key] });
         }
 
-        if (saveToDrive)
+        if (saveChanges) {
             this.drive_saveAppConfig();
+            this.local_saveAppConfig();
+        }
 
         if (unhandled.length > 0){
             console.warn('config contained invalid values. they have been ignored', unhandled);
         }
     }
 
-    updateConfigValue(key, value, saveToDrive = true) {
+    updateConfigValue(key, value, saveChanges = true) {
         const updateSuccess = this._internal_updateConfigValueInternal(key, value);
-        if (updateSuccess && saveToDrive) {
+        if (updateSuccess && saveChanges) {
             this.drive_saveAppConfig();
+            this.local_saveAppConfig();
         }
         return updateSuccess;
     }
@@ -112,9 +120,20 @@ export class ConfigController extends Disposable {
     }
 
     drive_saveAppConfig() {
+        if (!this.configFileInfo)
+            return;
+
         console.log('will now upload config to drive', this.config);
         return this._drive.uploadSimple(this.configFileInfo.id, JSON.stringify(this.config))
             .then(response => console.log('config saved to drive.'));
+    }
+
+    local_getAppConfig() {
+        return JSON.parse(localStorage.getItem('commanditor.config'));
+    }
+
+    local_saveAppConfig() {
+        localStorage.setItem('commanditor.config', JSON.stringify(this.config));
     }
 
 	getId() {
