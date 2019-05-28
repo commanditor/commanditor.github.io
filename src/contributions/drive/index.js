@@ -7,7 +7,7 @@ import { IContextKeyService, RawContextKey } from 'monaco-editor/esm/vs/platform
 import { SaveAction } from './SaveAction';
 import { CreateFileAction } from './CreateFileAction';
 
-export const CONTEXTKEY_DRIVE_CANCREATENEWFILE = new RawContextKey('canCreateNewDriveFile', false);
+export const CONTEXTKEY_DRIVE_CANCREATENEWFILE = new RawContextKey('canCreateNewDriveFile', true);
 
 export class DriveController extends Disposable {
     constructor(editor, /*@IContextKeyService*/ _contextKeyService) {
@@ -45,9 +45,7 @@ export class DriveController extends Disposable {
                 }
             } else if(state.action === 'create') {
                 // ask for filename (and instantly deactivate the create command again)
-                this._contextKey_canCreateNewFile.set(true);
                 this._editor.getAction(CreateFileAction.ID).run();
-                this._contextKey_canCreateNewFile.set(false);
             }
         }
     }
@@ -75,6 +73,9 @@ export class DriveController extends Disposable {
             this.currentFileModel = monaco.editor.createModel(fileContent, lang.id);
             this._editor.setModel(this.currentFileModel);
             this._editor.focus();
+
+            // prevent create new
+            this._contextKey_canCreateNewFile.set(false);
         }).catch(e => console.log('an error occured while trying to open the file', e));
     }
 
@@ -98,6 +99,9 @@ export class DriveController extends Disposable {
             this.currentFileModel = monaco.editor.createModel(fileContent, lang.id);
             this._editor.setModel(this.currentFileModel);
             this._editor.focus();
+            
+            // prevent create new
+            this._contextKey_canCreateNewFile.set(false);
         }).catch(e => console.log('an error occured while trying to create the file', e));
     }
 
