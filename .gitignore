@@ -1,2 +1,3 @@
 node_modules/
 # app/*
+src/gapi_consts.dev.js

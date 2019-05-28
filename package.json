@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
   "scripts": {
-    "build": "webpack --progress",
-    "build-prod": "webpack --mode=\"production\" --progress",
-    "watch": "webpack --watch --progress",
+    "build": "webpack --env dev --progress",
+    "build-prod": "webpack --mode=\"production\" --env prod --progress",
+    "watch": "webpack --watch --env dev --progress",
     "dev": "concurrently \"npm:watch\" \"npm:serve\"",
     "serve": "python -m http.server 8000",
     "serve2": "python -m SimpleHTTPServer 8000"

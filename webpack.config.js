@@ -1,7 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 //const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
+module.exports = (env) => ({
 	mode: 'development',
 	entry: {
 		"app": './src/index.js',
@@ -33,7 +34,8 @@ module.exports = {
 		}]
 	},
 	plugins: [
+		new webpack.NormalModuleReplacementPlugin(/(.*).ENV_TARGET(\.*)/, resource => resource.request = resource.request.replace(/.ENV_TARGET/, `.${env}`))
 		// webpack uglyfies already, and  uglyfyjs breaks build-prod
 		//new UglifyJSPlugin()
 	],
-};
+});

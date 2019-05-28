@@ -2,7 +2,7 @@ import { EditorAction, EditorCommand, registerEditorAction, registerEditorComman
 import { defaultInsertColor, defaultRemoveColor } from 'monaco-editor/esm/vs/platform/theme/common/colorRegistry';
 import { Disposable } from 'monaco-editor/esm/vs/base/common/lifecycle';
 import { Emitter } from 'monaco-editor/esm/vs/base/common/event';
-import * as GAPI_CONSTS from '../gapi_consts';
+import * as GAPI_CONSTS from '../gapi_consts.ENV_TARGET';
 
 export class GapiAuthController extends Disposable {
 	constructor(

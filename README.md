@@ -10,3 +10,5 @@ The app is based on [Monaco Editor](https://github.com/microsoft/monaco-editor),
 npm install
 npm run dev
 ```
+
+(if building for dev fails, its probably because there is not `src/gapi_consts.dev.js` with client-id and scopes for development. File is part of `.gitignore` as everyone should have their own.)
