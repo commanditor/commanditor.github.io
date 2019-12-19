@@ -15,7 +15,7 @@ module.exports = (env) => ({
 	output: {
 		globalObject: 'self',
 		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'app')
+		path: path.resolve(__dirname, 'dist')
 	},
 	module: {
 		rules: [{

@@ -3,20 +3,26 @@
   "version": "0.1.0",
   "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
   "scripts": {
-    "build": "webpack --env dev --progress",
-    "build-prod": "del app\\*.bundle.js & webpack --mode=\"production\" --env prod --progress",
-    "watch": "webpack --watch --env dev --progress",
+    "clean": "del /S /Q dist && FOR /D %p IN (\"dist\\*\") DO rmdir /S /Q \"%p\"",
+    "prebuild": "npm run clean",
+    "prebuild-prod": "npm run clean",
+    "build": "xcopy public\\* dist\\ & webpack --env dev --progress",
+    "build-prod": "xcopy public\\* dist\\ & webpack --mode=\"production\" --env prod --progress",
+    "watch": "xcopy public\\* dist\\ & webpack --watch --env dev --progress",
     "dev": "concurrently \"npm:watch\" \"npm:serve\"",
+    "predeploy": "npm run build-prod",
+    "deploy": "gh-pages -m \"Deploy %npm_package_version% to gh-pages\" -d ./dist/",
+    "postversion": "npm run deploy",
     "serve": "python -m http.server 8000",
     "serve2": "python -m SimpleHTTPServer 8000"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/commanditor/commanditor.github.io.git"
+    "url": "git+https://github.com/commanditor/app.git"
   },
   "author": "sydeslyde",
   "bugs": {
-    "url": "https://github.com/commanditor/commanditor.github.io/issues"
+    "url": "https://github.com/commanditor/app/issues"
   },
   "homepage": "https://commanditor.github.io",
   "devDependencies": {
@@ -25,6 +31,7 @@
     "babel-loader": "^8.0.6",
     "concurrently": "^4.1.0",
     "css-loader": "^2.1.1",
+    "gh-pages": "^2.1.1",
     "monaco-editor": "^0.17.0",
     "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^2.1.3",
