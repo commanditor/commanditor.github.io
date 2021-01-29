@@ -12,7 +12,8 @@ import { GapiAuthController } from './contributions/gapiAuth';
 const domNode = document.getElementById('container');
 const editor = monaco.editor.create(domNode, {
 	value: '',
-	language: 'plaintext'
+	language: 'plaintext',
+	wordWrap: 'on'
 });
 editor.focus();
 
