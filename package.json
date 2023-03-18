@@ -1,6 +1,6 @@
 {
   "name": "commanditor",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
   "scripts": {
     "clean": "del /S /Q dist && FOR /D %p IN (\"dist\\*\") DO rmdir /S /Q \"%p\"",
