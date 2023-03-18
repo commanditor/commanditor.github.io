@@ -3,6 +3,7 @@ import { defaultInsertColor, defaultRemoveColor } from 'monaco-editor/esm/vs/pla
 import { Disposable } from 'monaco-editor/esm/vs/base/common/lifecycle';
 import { Emitter } from 'monaco-editor/esm/vs/base/common/event';
 import * as GAPI_CONSTS from '../gapi_consts.ENV_TARGET';
+import { getUrlState } from '../Utils'
 
 export class GapiAuthController extends Disposable {
 	constructor(
@@ -12,6 +13,8 @@ export class GapiAuthController extends Disposable {
 
         this._editor = editor;
         this._onLoggedInChangedEmitter = new Emitter();
+
+        this.tokenClient = null;
     }
 
     get onLoggedInChanged() {
@@ -19,27 +22,58 @@ export class GapiAuthController extends Disposable {
     }
 
     get isLoggedIn() {
-        return gapi.auth2.getAuthInstance().isSignedIn.get();
+        return gapi.client.getToken() !== null;
     }
 
     loadGapi() {
-        gapi.load('client:auth2', () => this.initGapiAuth());
+        if (!!window.gapi && !!window.google) {
+            this.initGapiClient();
+
+            const urlState = getUrlState();
+            this.initTokenClient(urlState !== null ? urlState.userId : undefined);
+        }
     }
 
-    initGapiAuth() {
-        gapi.client.init({
+    /**
+     * 
+     * @param {string|undefined} hint use email or user-id of signed in account as hint for token client,
+     * to skip account selection when no new consent is needed
+     */
+     initTokenClient(hint) {
+        // init token client
+        this.tokenClient = google.accounts.oauth2.initTokenClient({
             //apiKey: GAPI_CONSTS.API_KEY,
-            clientId: GAPI_CONSTS.CLIENT_ID,
-            discoveryDocs: GAPI_CONSTS.DISCOVERY_DOCS,
-            scope: GAPI_CONSTS.SCOPES
-        }).then(() => this.onGapiInit())
-          .catch(err => console.log('gapi init error', err));
+            client_id: GAPI_CONSTS.CLIENT_ID,
+            scope: GAPI_CONSTS.SCOPES,
+            hint: hint,
+            callback: (tokenResponse) => {
+                if (tokenResponse && tokenResponse.access_token) {
+                    this.handleGapiAuthChange(this.isLoggedIn);
+                }
+            },
+            error_callback: (error) => {
+                console.error(error);
+            }
+        });
+
+        if (hint) {
+            this.tokenClient.requestAccessToken({ prompt: '' });
+        }
+    }
+
+    initGapiClient() {
+        gapi.load('client', () => {
+            gapi.client.init({
+                discoveryDocs: GAPI_CONSTS.DISCOVERY_DOCS,
+            }).then(() => this.onGapiInit())
+            .catch(err => {
+                console.error('gapi init error', err);
+                alert('GAPI client could not be initialized.\nCheck browser console for details.');
+            });
+        });
     }
 
     onGapiInit() {
-        // Listen for sign-in state changes.
-        gapi.auth2.getAuthInstance().isSignedIn.listen(b => this.handleGapiAuthChange(b));
-
         // Handle the initial sign-in state.
         this.handleGapiAuthChange(this.isLoggedIn);
     }
@@ -48,14 +82,37 @@ export class GapiAuthController extends Disposable {
         this._onLoggedInChangedEmitter.fire(newState);
     }
 
-    requestAuthorization() {
-        // TODO
-        gapi.auth2.getAuthInstance().signIn();
+    requestTokenForGapiError(err) {
+        console.warn('error in gapi, probably need new token', err);
+        
+        if (err.result.error.code === 401 || (err.result.error.code === 403) &&
+            (err.result.error.status === 'PERMISSION_DENIED')) {
+
+            // The access token is missing, invalid, or expired, prompt user to obtain one.
+            return new Promise((resolve, reject) => {
+                try {
+                    this.tokenClient.callback = (res) => {
+                        if (res.error !== undefined) {
+                            reject(res);
+                        }
+                        resolve(res);
+                    };
+                    this.tokenClient.error_callback = (err) => {
+                        alert('error while trying to open the authorization popup.\n' + err.message);
+                    }
+                    this.tokenClient.requestAccessToken({ prompt: '' });
+                } catch (err) {
+                    console.log(err)
+                }
+            });
+        } else {
+            // Errors unrelated to authorization: server errors, exceeding quota, bad requests, and so on.
+            return Promise.reject(err.result.error.message);
+        }
     }
 
-    requestSignOut() {
-        // TODO
-        gapi.auth2.getAuthInstance().signOut();
+    requestAuthorization() {
+        this.tokenClient.requestAccessToken({ prompt: '' });
     }
 
 	getId() {

@@ -13,7 +13,7 @@ export function getUrlState() {
         return null;
 
     return {
-        /** @type {string} */
+        /** @type {string[]} */
         ids: state.ids,
         /** @type {string} */
         userId: state.userId,

@@ -1,5 +1,5 @@
 import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution } from 'monaco-editor/esm/vs/editor/browser/editorExtensions';
-import { contrastBorder, editorWidgetBackground, widgetShadow } from 'monaco-editor/esm/vs/platform/theme/common/colorRegistry';
+import { contrastBorder, editorWidgetBackground, widgetShadow, textLinkForeground } from 'monaco-editor/esm/vs/platform/theme/common/colorRegistry';
 import { Disposable } from 'monaco-editor/esm/vs/base/common/lifecycle';
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { registerThemingParticipant } from 'monaco-editor/esm/vs/platform/theme/common/themeService';
@@ -75,6 +75,8 @@ class WelcomeModalWidget extends Widget {
 		this._register(authController.onLoggedInChanged((b) => b ? this.hide() : this.show()));
 
 		this._editor.addOverlayWidget(this);
+
+		this.show();
 	}
 
 	dispose() {
@@ -110,8 +112,9 @@ class WelcomeModalWidget extends Widget {
 
 	_buildContent() {
 		let text = 'Welcome to commanditor!\n\n';
-		text += 'Your simple text editor for all your editing need for your text files on Google Drive™.\n\n';
+		text += 'Your simple text editor for all your editing needs for your text files on Google Drive™.\n\n';
 		text += 'Get started by authorizing the App to access your Google Drive, and explore the available Commands by pressing the F1 key!\n';
+		text += 'Make sure you check all relevant boxes, so commanditor can access your Google Drive File!\n\n';
 		this._contentDomNode.domNode.appendChild(renderFormattedText(text));
 		
 		let authController = GapiAuthController.get(this._editor);
@@ -123,9 +126,17 @@ class WelcomeModalWidget extends Widget {
 		this._contentDomNode.domNode.appendChild(btnAuth.domNode);
 
 		let text2 = '\nSome more info:\n';
-		text2 += 'commanditor is based on the very solid foundation of "monaco-editor", the text-editor that also powers Visual Studio Code.\n';
-		text2 += 'Hosting relies on GitHub Pages.';
-		this._contentDomNode.domNode.appendChild(renderFormattedText(text2));
+		text2 += 'commanditor is based on the very solid foundation of "monaco-editor", the text-editor that also powers Visual Studio Code.\n\n';
+		text2 += 'Bugs can be reported on ';
+		const text2Element = renderFormattedText(text2);
+		const ghIssueLink = createFastDomNode(document.createElement('a'));
+		ghIssueLink.domNode.href = 'https://github.com/commanditor/app';
+		ghIssueLink.domNode.target = '_blank';
+		ghIssueLink.domNode.rel = 'noopener noreferrer';
+		ghIssueLink.domNode.innerText = 'GitHub';
+		text2Element.appendChild(ghIssueLink.domNode);
+		this._contentDomNode.domNode.appendChild(text2Element);
+		
 		// Per https://www.w3.org/TR/wai-aria/roles#document, Authors SHOULD provide a title or label for documents
 		this._contentDomNode.domNode.setAttribute('aria-label', text);
 	}
@@ -160,7 +171,7 @@ class WelcomeModalWidget extends Widget {
 }
 WelcomeModalWidget.ID = 'commanditor.contrib.WelcomeModalWidget';
 WelcomeModalWidget.WIDTH = 500;
-WelcomeModalWidget.HEIGHT = 300;
+WelcomeModalWidget.HEIGHT = 400;
 
 registerEditorContribution(WelcomeModalController);
 
@@ -172,14 +183,18 @@ registerThemingParticipant((theme, collector) => {
 		border: none;
 		width: fit-content;
 		color: #ffffff;
-		margin: 10px 0;
+		margin: 0 auto;
 		font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
 		font-weight: 600;
-		padding: 1px 6px;
-		margin: 4px;
-		font-size: 11px;
+		padding: 8px 32px;
+		font-size: 18px;
 		cursor: pointer;
 	}`);
+
+	const textLinkForegroundColor = theme.getColor(textLinkForeground);
+	if (textLinkForegroundColor) {
+		collector.addRule(`.monaco-editor .welcomeModalWidget a { color: ${textLinkForegroundColor}; }`);
+	}
 
 	const widgetBackground = theme.getColor(editorWidgetBackground);
 	if (widgetBackground) {

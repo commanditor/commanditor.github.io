@@ -25,11 +25,12 @@ export class DriveController extends Disposable {
         this.currentFileInfo = undefined;
         this.currentFileSavedContent = undefined;
 
-        GapiAuthController.get(this._editor).onLoggedInChanged((b) => this.handleLoggedInChange(b));
+        this.gapiAuthController = GapiAuthController.get(this._editor);
+        this.gapiAuthController.onLoggedInChanged((b) => this.handleLoggedInChange(b));
     }
 
     handleLoggedInChange(b) {
-        if (!b)
+        if (!b || (b && this.state))
             return;
 
         // try to load file from url-state
@@ -45,7 +46,8 @@ export class DriveController extends Disposable {
                 }
             } else if(state.action === 'create') {
                 // ask for filename (and instantly deactivate the create command again)
-                this._editor.getAction(CreateFileAction.ID).run();
+                // HACK wait a tiny amount, so the keyboard focus can move to the filename-input
+                setTimeout(() => this._editor.getAction(CreateFileAction.ID).run(), 33);
             }
         }
     }
@@ -118,19 +120,28 @@ export class DriveController extends Disposable {
             return;
         }
 
-        console.log('will now try to save file');
-        return this.uploadSimple(this.currentFileInfo.id, currentModelContent)
-            .then(fi => {
-                this.currentFileSavedContent = currentModelContent;
-                
-                const editMarginController = EditMarginController.get(this._editor);
-                editMarginController.reset();
+        
+        const uploadAction = () => {
+            console.log('will now try to save file');
+            return this.uploadSimple(this.currentFileInfo.id, currentModelContent)
+                .then(fi => {
+                    this.currentFileSavedContent = currentModelContent;
+                    
+                    const editMarginController = EditMarginController.get(this._editor);
+                    editMarginController.reset();
 
-                console.log('file successfully saved');
+                    console.log('file successfully saved');
 
-                return fi;
-            })
-            .catch(e => console.log('an error occcured during file saving', e));
+                    return fi;
+                });
+        };
+
+        return uploadAction()
+            .catch(err => this.gapiAuthController.requestTokenForGapiError(err).then(retry => uploadAction()))
+            .catch(err => {
+                console.error('An error occcured while saving the file', err);
+                alert('An error occcured while saving the file.\nMaybe trying again helps?\n\nMore Info:\n' + err);
+            });
     }
 
     /**
