@@ -15,7 +15,8 @@ monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
 const domNode = document.getElementById('container');
 const editor = monaco.editor.create(domNode, {
 	value: '',
-	language: 'plaintext'
+	language: 'plaintext',
+	wordWrap: 'on'
 });
 editor.focus();
 
