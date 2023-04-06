@@ -1,32 +1,34 @@
 {
-  "name": "commanditor",
-  "version": "0.2.0",
-  "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -m \"Deploy %npm_package_version% to gh-pages\" -d ./dist/",
-    "postversion": "npm run deploy"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/commanditor/app.git"
-  },
-  "author": "avgrad",
-  "bugs": {
-    "url": "https://github.com/commanditor/app/issues"
-  },
-  "homepage": "https://commanditor.github.io",
-  "dependencies": {
-    "monaco-editor": "^0.17.0"
-  },
-  "devDependencies": {
-    "@types/gapi": "^0.0.43",
-    "@types/gapi.client.drive": "^3.0.14",
-    "@types/google.accounts": "^0.0.7",
-    "gh-pages": "^2.1.1",
-    "vite": "^4.2.1"
-  }
+    "name": "commanditor",
+    "version": "0.2.0",
+    "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -m \"Deploy %npm_package_version% to gh-pages\" -d ./dist/",
+        "postversion": "npm run deploy",
+        "check-format": "prettier --check ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/commanditor/app.git"
+    },
+    "author": "avgrad",
+    "bugs": {
+        "url": "https://github.com/commanditor/app/issues"
+    },
+    "homepage": "https://commanditor.github.io",
+    "dependencies": {
+        "monaco-editor": "^0.17.0"
+    },
+    "devDependencies": {
+        "@types/gapi": "^0.0.43",
+        "@types/gapi.client.drive": "^3.0.14",
+        "@types/google.accounts": "^0.0.7",
+        "gh-pages": "^2.1.1",
+        "prettier": "^2.8.7",
+        "vite": "^4.2.1"
+    }
 }

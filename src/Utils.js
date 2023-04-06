@@ -5,12 +5,10 @@ export function getUrlState() {
     // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
     // https://developers.google.com/drive/api/v3/enable-sdk#drive_integration
     const urlParams = new URLSearchParams(window.location.search);
-    if (!urlParams)
-        return null;
+    if (!urlParams) return null;
 
-    const state = JSON.parse(urlParams.get('state'));
-    if (!state)
-        return null;
+    const state = JSON.parse(urlParams.get("state"));
+    if (!state) return null;
 
     return {
         /** @type {string[]} */
@@ -20,9 +18,9 @@ export function getUrlState() {
         /** @type {("open"|"create")} */
         action: state.action,
         /** @type {string} */
-        folderId: state.folderId
+        folderId: state.folderId,
     };
-};
+}
 
 /**
  * tries to get the monaco-language for a filename
@@ -31,7 +29,9 @@ export function getUrlState() {
  */
 export function getMonacoLanguageForFilename(fileName) {
     const monacoLanguages = self.monaco.languages.getLanguages();
-    const matches = monacoLanguages.filter(lang => lang.extensions.some(ext => fileName.endsWith(ext)));
+    const matches = monacoLanguages.filter((lang) =>
+        lang.extensions.some((ext) => fileName.endsWith(ext))
+    );
     if (matches.length > 0)
         // every extension only appears for one language
         return matches[0];
@@ -49,12 +49,12 @@ export function monacoLanguageSupportedForFilename(fileName) {
 
 class AppConfig {
     constructor() {
-        this.theme = 'vs-dark'
+        this.theme = "vs-dark";
     }
 
     getEditorConstructionOptions() {
         return {
-            theme: this.theme
+            theme: this.theme,
         };
     }
 }
@@ -99,4 +99,3 @@ class FileModel {
     // file model überhaupt benutzt, oder direkt mit gapi-fileinfo objekten arbeiten? mappen?
     // TODO ??? methoden hier?
 }
-

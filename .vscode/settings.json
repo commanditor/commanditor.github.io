@@ -1,0 +1,27 @@
+{
+    "[json][jsonc]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript][javascriptreact][typescript][typescriptreact]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css][scss]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.tabSize": 4,
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "files.exclude": {
+        "node_modules/": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "package-lock.json": true
+    }
+}
