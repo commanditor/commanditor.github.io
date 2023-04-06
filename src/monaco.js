@@ -1,5 +1,10 @@
 // HINT we will import the editor parts ourself so we can skip for example the "toggle high contrast" action
 
+// custom worker bundled from vite
+import './userWorker';
+
+export * from 'monaco-editor/esm/vs/editor/editor.api';
+
 // import default monaco editor main
 import 'monaco-editor/esm/vs/editor/editor.all';
 import 'monaco-editor/esm/vs/editor/standalone/browser/accessibilityHelp/accessibilityHelp';
@@ -50,23 +55,3 @@ import 'monaco-editor/esm/vs/basic-languages/xml/xml.contribution.js';
 import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution.js';
 import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
 import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution';
-
-self.MonacoEnvironment = {
-	getWorkerUrl: function (moduleId, label) {
-		if (label === 'json') {
-			return './json.worker.bundle.js';
-		}
-		if (label === 'css') {
-			return './css.worker.bundle.js';
-		}
-		if (label === 'html') {
-			return './html.worker.bundle.js';
-		}
-		if (label === 'typescript' || label === 'javascript') {
-			return './ts.worker.bundle.js';
-		}
-		return './editor.worker.bundle.js';
-	}
-}
-
-export * from 'monaco-editor/esm/vs/editor/editor.api';

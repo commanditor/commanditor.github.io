@@ -9,6 +9,9 @@ import './contributions/config';
 import './contributions/welcomeModal';
 import { GapiAuthController } from './contributions/gapiAuth';
 
+// was placed in the user-worker in the sample, but does not work there
+monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
+
 const domNode = document.getElementById('container');
 const editor = monaco.editor.create(domNode, {
 	value: '',
@@ -25,4 +28,6 @@ window.editor = editor;
 
 window.handleClientLoad = () => {
 	GapiAuthController.get(editor).loadGapi();
-}
+};
+
+window.handleClientLoad?.();

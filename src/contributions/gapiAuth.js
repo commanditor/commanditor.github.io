@@ -2,7 +2,7 @@ import { EditorAction, EditorCommand, registerEditorAction, registerEditorComman
 import { defaultInsertColor, defaultRemoveColor } from 'monaco-editor/esm/vs/platform/theme/common/colorRegistry';
 import { Disposable } from 'monaco-editor/esm/vs/base/common/lifecycle';
 import { Emitter } from 'monaco-editor/esm/vs/base/common/event';
-import * as GAPI_CONSTS from '../gapi_consts.ENV_TARGET';
+import * as GAPI_CONSTS from '../gapi_consts.prod';
 import { getUrlState } from '../Utils'
 
 export class GapiAuthController extends Disposable {
@@ -27,6 +27,8 @@ export class GapiAuthController extends Disposable {
 
     loadGapi() {
         if (!!window.gapi && !!window.google) {
+            window.handleClientLoad = () => {};
+
             this.initGapiClient();
 
             const urlState = getUrlState();

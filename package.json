@@ -3,18 +3,12 @@
   "version": "0.2.0",
   "description": "Text Editor for files on Google Drive with many helping features organized in a command palette",
   "scripts": {
-    "clean": "del /S /Q dist && FOR /D %p IN (\"dist\\*\") DO rmdir /S /Q \"%p\"",
-    "prebuild": "npm run clean",
-    "prebuild-prod": "npm run clean",
-    "build": "xcopy public\\* dist\\ /Y & webpack --env dev --progress",
-    "build-prod": "xcopy public\\* dist\\ /Y & webpack --mode=\"production\" --env prod --progress",
-    "watch": "xcopy public\\* dist\\ /Y & webpack --watch --env dev --progress",
-    "dev": "concurrently \"npm:watch\" \"npm:serve\"",
-    "predeploy": "npm run build-prod",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -m \"Deploy %npm_package_version% to gh-pages\" -d ./dist/",
-    "postversion": "npm run deploy",
-    "serve": "python3 -m http.server 8000",
-    "serve2": "python -m SimpleHTTPServer 8000"
+    "postversion": "npm run deploy"
   },
   "repository": {
     "type": "git",
@@ -25,20 +19,14 @@
     "url": "https://github.com/commanditor/app/issues"
   },
   "homepage": "https://commanditor.github.io",
+  "dependencies": {
+    "monaco-editor": "^0.17.0"
+  },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
     "@types/gapi": "^0.0.43",
     "@types/gapi.client.drive": "^3.0.14",
     "@types/google.accounts": "^0.0.7",
-    "babel-loader": "^8.0.6",
-    "concurrently": "^4.1.0",
-    "css-loader": "^2.1.1",
     "gh-pages": "^2.1.1",
-    "monaco-editor": "^0.17.0",
-    "style-loader": "^0.23.1",
-    "uglifyjs-webpack-plugin": "^2.1.3",
-    "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2"
+    "vite": "^4.2.1"
   }
 }

@@ -1,7 +1,7 @@
 import { QuickOpenEntry, QuickOpenModel } from 'monaco-editor/esm/vs/base/parts/quickopen/browser/quickOpenModel';
 import { registerEditorAction } from 'monaco-editor/esm/vs/editor/browser/editorExtensions';
 import { BaseEditorQuickOpenAction } from 'monaco-editor/esm/vs/editor/standalone/browser/quickOpen/editorQuickOpen';
-import { matchesFuzzy } from 'monaco-editor/esm/vs/base/common/filters/';
+import { matchesFuzzy } from 'monaco-editor/esm/vs/base/common/filters';
 
 class LanguageModeEntry extends QuickOpenEntry {
     constructor(languageModeDesc, editor) {

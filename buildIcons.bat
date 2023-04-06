@@ -3,8 +3,8 @@
 rem https://inkscape.org/sk/doc/inkscape-man.html
 
 set INKSCAPE=C:\Program Files\Inkscape\Inkscape.exe
-set SVGICON_FILENAME=%cd%\commanditor.svg
-set EXPORT_DIR=%cd%\
+set SVGICON_FILENAME=%cd%\public\icon\commanditor.svg
+set EXPORT_DIR=%cd%\public\icon\
 set SIZES=(256 192 128 64 32 24 16)
 
 if exist "%INKSCAPE%" (
