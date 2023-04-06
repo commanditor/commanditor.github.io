@@ -1,5 +1,5 @@
 // App client id and api key
-export const CLIENT_ID = '779271503066-2a5r51l1etd7b6e7a8iks0acqh8lfutp.apps.googleusercontent.com';
+export const CLIENT_ID = import.meta.env.VITE_GAPI_CLIENT_ID;
 //export const API_KEY = '---';
 
 // Array of API discovery doc URLs for APIs
