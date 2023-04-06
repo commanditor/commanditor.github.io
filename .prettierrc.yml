@@ -10,3 +10,8 @@ quoteProps: "as-needed"
 bracketSameLine: true
 arrowParens: "always"
 endOfLine: "auto"
+
+overrides:
+  - files: "*.yml"
+    options:
+      tabWidth: 2
