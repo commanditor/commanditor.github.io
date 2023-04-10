@@ -6,9 +6,6 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
-        "predeploy": "npm run build",
-        "deploy": "gh-pages -m \"Deploy %npm_package_version% to gh-pages\" -d ./dist/",
-        "postversion": "npm run deploy",
         "check-format": "prettier --check ."
     },
     "repository": {
@@ -27,7 +24,6 @@
         "@types/gapi": "^0.0.43",
         "@types/gapi.client.drive": "^3.0.14",
         "@types/google.accounts": "^0.0.7",
-        "gh-pages": "^2.1.1",
         "prettier": "^2.8.7",
         "vite": "^4.2.1"
     }
