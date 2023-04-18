@@ -75,18 +75,22 @@ export class DriveController extends Disposable {
         this.getFileInfo(id)
             .then((fi) => {
                 console.log("file info:", fi);
-                if (monacoLanguageSupportedForFilename(fi.name)) {
-                    this.currentFileInfo = fi;
-                    this.setDocumentFileTitle(this.currentFileInfo.name);
-
-                    console.log("will now try to get file content");
-                    return this.getFileContent(id);
+                if (!monacoLanguageSupportedForFilename(fi.name)) {
+                    const openAnyway = confirm(
+                        "The extension of the file you tried to open is not fully supported.\nDo you want to try opening the file anyway?"
+                    );
+                    if (openAnyway) {
+                        // continue after language support check
+                    } else {
+                        return Promise.reject("extension is not supported");
+                    }
                 }
 
-                alert(
-                    "The extension of the file you tried to open is not supported."
-                );
-                return Promise.reject("extension is not supported");
+                this.currentFileInfo = fi;
+                this.setDocumentFileTitle(this.currentFileInfo.name);
+
+                console.log("will now try to get file content");
+                return this.getFileContent(id);
             })
             .then((fileContent) => {
                 console.log(
