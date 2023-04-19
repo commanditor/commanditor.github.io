@@ -10,11 +10,12 @@ import "monaco-editor/esm/vs/editor/editor.all";
 import "monaco-editor/esm/vs/editor/standalone/browser/accessibilityHelp/accessibilityHelp";
 import "monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard";
 import "monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens";
-import "monaco-editor/esm/vs/editor/standalone/browser/quickOpen/gotoLine";
-import "monaco-editor/esm/vs/editor/standalone/browser/quickOpen/quickCommand";
-import "monaco-editor/esm/vs/editor/standalone/browser/quickOpen/quickOutline";
+import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneHelpQuickAccess";
+import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess";
+import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess";
+import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess";
 import "monaco-editor/esm/vs/editor/standalone/browser/referenceSearch/standaloneReferenceSearch";
-//import 'monaco-editor/esm/vs/editor/standalone/browser/toggleHighContrast/toggleHighContrast';
+//import "monaco-editor/esm/vs/editor/standalone/browser/toggleHighContrast/toggleHighContrast";
 
 // import monaco language support, because importing monaco ourself above does not automatically include languages
 import "monaco-editor/esm/vs/language/typescript/monaco.contribution";

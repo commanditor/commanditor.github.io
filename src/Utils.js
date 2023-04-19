@@ -1,3 +1,5 @@
+import * as monaco from "./monaco";
+
 /**
  * Utilities
  */
@@ -28,9 +30,9 @@ export function getUrlState() {
  * @returns {string} the monaco language id, or NULL if not supported (set plaintext as fallback if needed)
  */
 export function getMonacoLanguageForFilename(fileName) {
-    const monacoLanguages = self.monaco.languages.getLanguages();
+    const monacoLanguages = monaco.languages.getLanguages();
     const matches = monacoLanguages.filter((lang) =>
-        lang.extensions.some((ext) => fileName.endsWith(ext))
+        lang.extensions?.some((ext) => fileName.endsWith(ext))
     );
     if (matches.length > 0)
         // every extension only appears for one language

@@ -1,3 +1,4 @@
+import * as monaco from "../monaco";
 import {
     EditorAction,
     EditorCommand,
@@ -63,7 +64,7 @@ export class EditMarginController extends Disposable {
 
                 this._editor.deltaDecorations(oldDecorationIds, [
                     {
-                        range: new self.monaco.Range(li, 0, li, 0),
+                        range: new monaco.Range(li, 0, li, 0),
                         options: {
                             isWholeLine: true,
                             marginClassName: marginClassName,
@@ -93,7 +94,7 @@ export class EditMarginController extends Disposable {
 
         const oldDecorationIds = oldLineDecorations.map((d) => d.id);
         const newDecorations = oldLineDecorations.map((d) => ({
-            range: new self.monaco.Range(
+            range: new monaco.Range(
                 d.range.startLineNumber,
                 0,
                 d.range.startLineNumber,
@@ -118,7 +119,11 @@ EditMarginController.get = (editor) => {
     return editor.getContribution(EditMarginController.ID);
 };
 
-registerEditorContribution(EditMarginController);
+registerEditorContribution(
+    EditMarginController.ID,
+    EditMarginController,
+    0 /* EditorContributionInstantiation.Eager */
+);
 
 registerThemingParticipant((theme, collector) => {
     const insertColor = defaultInsertColor.transparent(3);

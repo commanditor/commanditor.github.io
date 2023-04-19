@@ -1,70 +1,63 @@
-import {
-    QuickOpenEntry,
-    QuickOpenModel,
-} from "monaco-editor/esm/vs/base/parts/quickopen/browser/quickOpenModel";
-import { BaseEditorQuickOpenAction } from "monaco-editor/esm/vs/editor/standalone/browser/quickOpen/editorQuickOpen";
-import { DriveController } from "./index";
-import { CONTEXTKEY_DRIVE_CANCREATENEWFILE } from "./index";
+import { IQuickInputService } from "monaco-editor/esm/vs/platform/quickinput/common/quickInput";
 
-class CreateFileEntry extends QuickOpenEntry {
-    constructor(editor, newFileName) {
-        super();
-        this._editor = editor;
-        this.newFileName = newFileName;
-    }
+import { EditorAction } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
+import { EditorContextKeys } from "monaco-editor/esm/vs/editor/common/editorContextKeys";
+import { DriveController, CONTEXTKEY_DRIVE_CANCREATENEWFILE } from ".";
+import { GapiAuthController } from "../gapiAuth";
 
-    getLabel() {
-        if (!this.newFileName || this.newFileName.length === 0) {
-            return "type a name for the new file, or click somewhere to cancel";
-        }
+export class CreateFileAction extends EditorAction {
+    static ID = "commanditor.action.createNewFile";
 
-        return `Create File "${this.newFileName}"`;
-    }
-
-    run(mode, context) {
-        if (mode == 0) {
-            // run preview
-        } else if (mode == 1) {
-            // run open
-            if (!this.newFileName || this.newFileName.length === 0) {
-                return false;
-            }
-
-            // create file and set up to edit
-            DriveController.get(this._editor).createAndEditNewFile(
-                this.newFileName
-            );
-
-            return true;
-        }
-    }
-}
-
-export class CreateFileAction extends BaseEditorQuickOpenAction {
     constructor() {
-        super("type a name for the new file, or click somewhere to cancel", {
+        super({
             id: CreateFileAction.ID,
-            label: "Create new File",
-            alias: "Create new File",
+            label: "Create New File",
+            alias: "Create New File",
             precondition: CONTEXTKEY_DRIVE_CANCREATENEWFILE,
-            kbOpts: null,
+            kbOpts: {
+                kbExpr: EditorContextKeys.focus,
+                primary: undefined, // KeyMod.CtrlCmd | monaco.KeyCode.Escape,
+                mac: undefined, // { primary: monaco.KeyMod.WinCtrl | monaco.KeyCode.Escape },
+                weight: 100, // KeybindingWeight.EditorContrib,
+            },
         });
     }
 
     run(accessor, editor) {
-        this._show(this.getController(editor), {
-            getModel: (inputValue) => {
-                return new QuickOpenModel([
-                    new CreateFileEntry(editor, inputValue),
-                ]);
-            },
-            getAutoFocus: (inputValue) => {
-                return {
-                    autoFocusFirstEntry: inputValue.length > 0,
-                };
-            },
+        const gapiAuth = GapiAuthController.get(editor);
+        if (!gapiAuth.isLoggedIn) {
+            alert("please authenticate before creating a new file");
+            return;
+        }
+
+        const inputBox = accessor.get(IQuickInputService).createInputBox();
+        inputBox.title = "Create New File";
+        inputBox.description = "Enter the filename for your new file.";
+        inputBox.placeholder = "New Textfile.txt";
+
+        // event can be used for input validation
+        // inputBox.onDidChangeValue((input) => {
+        // inputBox.validationMessage = undefined;
+        // inputBox.severity = 0;
+        // });
+
+        inputBox.onDidAccept(() => {
+            if (inputBox.value) {
+                console.log("accepted!!", inputBox.value);
+
+                // create file and set up to edit
+                DriveController.get(editor).createAndEditNewFile(
+                    inputBox.value
+                );
+
+                inputBox.hide();
+            }
         });
+
+        inputBox.onDidHide(() => {
+            inputBox.dispose();
+        });
+
+        inputBox.show();
     }
 }
-
-CreateFileAction.ID = "commanditor.action.createNewFile";

@@ -14,7 +14,7 @@ import {
 import { Disposable } from "monaco-editor/esm/vs/base/common/lifecycle";
 import * as dom from "monaco-editor/esm/vs/base/browser/dom";
 import { registerThemingParticipant } from "monaco-editor/esm/vs/platform/theme/common/themeService";
-import { renderFormattedText } from "monaco-editor/esm/vs/base/browser/htmlContentRenderer";
+import { renderFormattedText } from "monaco-editor/esm/vs/base/browser/formattedTextRenderer";
 import {
     FastDomNode,
     createFastDomNode,
@@ -201,7 +201,11 @@ WelcomeModalWidget.ID = "commanditor.contrib.WelcomeModalWidget";
 WelcomeModalWidget.WIDTH = 500;
 WelcomeModalWidget.HEIGHT = 400;
 
-registerEditorContribution(WelcomeModalController);
+registerEditorContribution(
+    WelcomeModalController.ID,
+    WelcomeModalController,
+    0 /* EditorContributionInstantiation.Eager */
+);
 
 registerThemingParticipant((theme, collector) => {
     collector.addRule(`.monaco-editor .welcomeModalWidget { padding: 10px; }`);

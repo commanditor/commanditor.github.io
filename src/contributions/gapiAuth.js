@@ -149,4 +149,8 @@ GapiAuthController.get = (editor) => {
     return editor.getContribution(GapiAuthController.ID);
 };
 
-registerEditorContribution(GapiAuthController);
+registerEditorContribution(
+    GapiAuthController.ID,
+    GapiAuthController,
+    0 /* EditorContributionInstantiation.Eager */
+);

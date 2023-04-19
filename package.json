@@ -18,7 +18,7 @@
     },
     "homepage": "https://commanditor.github.io",
     "dependencies": {
-        "monaco-editor": "^0.17.0"
+        "monaco-editor": "^0.37.1"
     },
     "devDependencies": {
         "@types/gapi": "^0.0.43",

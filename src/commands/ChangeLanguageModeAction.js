@@ -1,77 +1,54 @@
+import * as monaco from "../monaco";
+import { IQuickInputService } from "monaco-editor/esm/vs/platform/quickinput/common/quickInput";
+
 import {
-    QuickOpenEntry,
-    QuickOpenModel,
-} from "monaco-editor/esm/vs/base/parts/quickopen/browser/quickOpenModel";
-import { registerEditorAction } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
-import { BaseEditorQuickOpenAction } from "monaco-editor/esm/vs/editor/standalone/browser/quickOpen/editorQuickOpen";
-import { matchesFuzzy } from "monaco-editor/esm/vs/base/common/filters";
+    EditorAction,
+    registerEditorAction,
+} from "monaco-editor/esm/vs/editor/browser/editorExtensions";
 
-class LanguageModeEntry extends QuickOpenEntry {
-    constructor(languageModeDesc, editor) {
-        super();
-        this._languageMode = languageModeDesc;
-        this._editor = editor;
+export class ChangeLanguageModeAction extends EditorAction {
+    static ID = "commanditor.action.changeLanguageMode";
 
-        this._label = this._languageMode.aliases
-            ? this._languageMode.aliases[0] + " (" + this._languageMode.id + ")"
-            : this._languageMode.id;
-    }
-
-    getLabel() {
-        return this._label;
-    }
-
-    run(mode, context) {
-        if (mode == 0) {
-            // run preview
-        } else if (mode == 1) {
-            // run open
-            self.monaco.editor.setModelLanguage(
-                this._editor.getModel(),
-                this._languageMode.id
-            );
-            return true;
-        }
-    }
-}
-
-class ChangeLanguageModeAction extends BaseEditorQuickOpenAction {
     constructor() {
-        super("type and select a language mode to switch to", {
-            id: "commanditor.action.changeLanguageMode",
+        super({
+            id: ChangeLanguageModeAction.ID,
             label: "Change Language Mode",
             alias: "Change Language Mode",
-            precondition: null,
-            kbOpts: null,
+            precondition: undefined,
+            kbOpts: undefined,
         });
     }
 
-    run(accessor, editor) {
-        this._show(this.getController(editor), {
-            getModel: (searchValue) => {
-                const quickOpenLangEntries = [];
-                const monacoLangs = self.monaco.languages.getLanguages();
-                for (var i = 0; i < monacoLangs.length; i++) {
-                    const lang = monacoLangs[i];
-                    const entry = new LanguageModeEntry(lang, editor);
+    async run(accessor, editor) {
+        const quickPick = accessor.get(IQuickInputService).createQuickPick();
 
-                    const highlights = matchesFuzzy(
-                        searchValue,
-                        entry.getLabel()
-                    );
-                    if (highlights) {
-                        quickOpenLangEntries.push(entry);
-                    }
-                }
+        quickPick.placeholder = "Select a language mode to switch to";
+        quickPick.matchOnDescription = true;
+        quickPick.items = this.makeQuickPickItems();
 
-                return new QuickOpenModel(quickOpenLangEntries);
-            },
-            getAutoFocus: (searchValue) => {
-                return {
-                    autoFocusFirstEntry: searchValue.length > 0,
-                };
-            },
+        quickPick.onDidHide(() => {
+            quickPick.dispose();
         });
+
+        quickPick.onDidAccept(() => {
+            const selectedItem = quickPick.selectedItems[0];
+
+            monaco.editor.setModelLanguage(editor.getModel(), selectedItem.id);
+
+            quickPick.hide();
+        });
+
+        quickPick.show();
+    }
+
+    makeQuickPickItems() {
+        const monacoLangs = monaco.languages.getLanguages();
+
+        return monacoLangs.map((l) => ({
+            id: l.id,
+            label: l.aliases?.[0] ?? l.id,
+            description: l.aliases?.join(", "),
+        }));
     }
 }
 

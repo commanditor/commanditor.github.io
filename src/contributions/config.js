@@ -1,3 +1,4 @@
+import * as monaco from "../monaco";
 import {
     EditorAction,
     EditorCommand,
@@ -88,7 +89,7 @@ export class ConfigController extends Disposable {
             switch (key) {
                 case "theme":
                     this.config.theme = value;
-                    self.monaco.editor.setTheme(value);
+                    monaco.editor.setTheme(value);
                     return true;
                 default:
                     console.error(
@@ -112,6 +113,7 @@ export class ConfigController extends Disposable {
                 return (
                     value === "vs" ||
                     value === "vs-dark" ||
+                    value === "hc-light" ||
                     value === "hc-black"
                 );
             default:
@@ -173,4 +175,8 @@ ConfigController.get = (editor) => {
     return editor.getContribution(ConfigController.ID);
 };
 
-registerEditorContribution(ConfigController);
+registerEditorContribution(
+    ConfigController.ID,
+    ConfigController,
+    0 /* EditorContributionInstantiation.Eager */
+);

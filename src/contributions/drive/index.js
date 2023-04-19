@@ -3,6 +3,7 @@ import {
     registerEditorContribution,
     registerEditorAction,
 } from "monaco-editor/esm/vs/editor/browser/editorExtensions";
+import * as monaco from "../../monaco";
 import { EditMarginController } from "../editMargin";
 import { GapiAuthController } from "../gapiAuth";
 import {
@@ -410,6 +411,10 @@ DriveController.get = (editor) => {
     return editor.getContribution(DriveController.ID);
 };
 
-registerEditorContribution(DriveController);
+registerEditorContribution(
+    DriveController.ID,
+    DriveController,
+    0 /* EditorContributionInstantiation.Eager */
+);
 registerEditorAction(SaveAction);
 registerEditorAction(CreateFileAction);
