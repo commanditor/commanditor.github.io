@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no" />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="/icon/commanditor.svg"
+            sizes="any" />
+        <link
+            rel="icon"
+            type="image/png"
+            href="/icon/icon96.png"
+            sizes="96x96" />
+        <link
+            rel="icon"
+            type="image/png"
+            href="/icon/icon32.png"
+            sizes="32x32" />
+        <link
+            rel="icon"
+            type="image/png"
+            href="/icon/icon16.png"
+            sizes="16x16" />
+        <title>commanditor</title>
+        <style>
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            #container {
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container"></div>
+        <script type="module" src="/src/index.js"></script>
+        <script
+            async
+            defer
+            src="https://accounts.google.com/gsi/client"
+            onload="this.onload=function(){};window.handleClientLoad?.()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+        <script
+            async
+            defer
+            src="https://apis.google.com/js/api.js"
+            onload="this.onload=function(){};window.handleClientLoad?.()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+    </body>
+</html>

@@ -15,7 +15,7 @@ The app is based on [Monaco Editor](https://github.com/microsoft/monaco-editor),
 
 ### Deploy
 
-[![Deploy to GH Pages](https://github.com/commanditor/app/actions/workflows/deploy-gh-pages.yml/badge.svg)](https://github.com/commanditor/app/actions/workflows/deploy-gh-pages.yml)
+[![Deploy to GH Pages](https://github.com/commanditor/commanditor.github.io/actions/workflows/deploy-gh-pages.yml/badge.svg)](https://github.com/commanditor/commanditor.github.io/actions/workflows/deploy-gh-pages.yml)
 
 Commanditor is hosted on GitHub Pages.
 

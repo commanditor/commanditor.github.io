@@ -10,11 +10,11 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/commanditor/app.git"
+        "url": "git+https://github.com/commanditor/commanditor.github.io.git"
     },
     "author": "avgrad",
     "bugs": {
-        "url": "https://github.com/commanditor/app/issues"
+        "url": "https://github.com/commanditor/commanditor.github.io/issues"
     },
     "homepage": "https://commanditor.github.io",
     "dependencies": {

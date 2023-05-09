@@ -152,7 +152,8 @@ class WelcomeModalWidget extends Widget {
         text2 += "Bugs can be reported on ";
         const text2Element = renderFormattedText(text2);
         const ghIssueLink = createFastDomNode(document.createElement("a"));
-        ghIssueLink.domNode.href = "https://github.com/commanditor/app";
+        ghIssueLink.domNode.href =
+            "https://github.com/commanditor/commanditor.github.io";
         ghIssueLink.domNode.target = "_blank";
         ghIssueLink.domNode.rel = "noopener noreferrer";
         ghIssueLink.domNode.innerText = "GitHub";
